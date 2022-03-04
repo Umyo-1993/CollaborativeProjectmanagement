@@ -77,41 +77,44 @@ const HomeScreen=()=>  {
   useEffect(()=>{
 
     onValue(ref(dbs,'/users'), (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
      
-       const childKey = childSnapshot.key;
-       const childData = childSnapshot.val();
+      
+      snapshot.forEach((childSnapshot) => {
+
+        const IELTS=childSnapshot.child("IELTS").val();
+        const name=childSnapshot.child("name").val();
+        const childkey=childSnapshot.key;
+        array.push({name : name,IELTS: IELTS,key:childkey});
+      
       // const childData = childSnapshot.child("name").val();
        
      
 
-       array.push({key:childSnapshot.child("name").val()});
+
+    //   array.push({key:childKey});
+   //  array.push({name:childSnapshot.child("name").val()});
+    // array.push({IELTS:childSnapshot.child("IELTS").val()});
+   //    array.push({IELTS:childSnapshot.child("IELTS").val()});
      
       //  array.push({childData});
-        setvalue(array);
-
         
+
+       
 
       });
      
    
       const data = snapshot.val();
       if (data !== null) {
-        console.log(data);
+        
+        setvalue(array);
       }
      
     });
   },[]); 
   
   console.log(value);
-  const renderItems=({item})=>
-  {
-    <View style={styles.container}>
-    <Text>Email: {item.key}</Text>
-    
   
-  </View>
-  }
 
   const handleSignOut = () => {
     signOut(auth).then(() => {
@@ -160,22 +163,23 @@ const HomeScreen=()=>  {
     </View>
     )*/
     const renderItemupdated = ({item})=>( 
-      <Text>Student's Name: {item.key}</Text>
+      <Text>Student's Name: {item.name}</Text>   
       
-     
+  
     );
+   
     return (
       <View style={styles.container}>
+       
         <FlatList
-       data={value}
+       data={value}     
        
        keyExtractor={(item) => item.key}
        renderItem={renderItemupdated}
           
-      
-         
+        
     />
-    
+     
     <TouchableOpacity
         onPress={handleSignOut}
         style={styles.button}
@@ -189,9 +193,8 @@ const HomeScreen=()=>  {
 export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    marginTop:30,
+    padding:2,
   },
    button: {
     backgroundColor: '#0782F9',
@@ -205,6 +208,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '700',
     fontSize: 16,
+  },
+  item: {
+    backgroundColor: '#f5f520',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
   },
 })
 //https://www.freecodecamp.org/news/react-native-firebase-tutorial/
