@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/core'
+
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View , FlatList} from 'react-native'
 import { auth } from '../firebase'
@@ -8,8 +8,8 @@ import {   getDatabase,ref, onValue ,set} from "firebase/database";
 import { useState, useEffect } from "react";
 
 
-const HomeScreen=()=>  {
-  const navigation = useNavigation()
+const HomeScreen=({navigation})=>  {
+ 
   //const [todo, setTodo] = useState("");
   const [value, setvalue] = useState([]);
   const  dbs = getDatabase();
@@ -119,7 +119,7 @@ const HomeScreen=()=>  {
   const handleSignOut = () => {
     signOut(auth).then(() => {
       // Sign-out successful.
-      navigation.replace("Login");
+      navigation.navigate("Login");
       console.log("Logout success");
     }).catch((error) => {
       // An error happened.
@@ -133,10 +133,8 @@ const HomeScreen=()=>  {
        const childData = childSnapshot.val();
        
      
-
         array.push(childData);
         console.log(array);
-
       });
    
   /*    const data = snapshot.val();
@@ -175,8 +173,21 @@ const HomeScreen=()=>  {
        data={value}     
        
        keyExtractor={(item) => item.key}
-       renderItem={renderItemupdated}
+    //   renderItem={renderItemupdated}
+    renderItem={({ item }) => {
+      // return <Text>{item.name}</Text>;
+
+        return(
+          <TouchableOpacity onPress={()=>navigation.navigate('Details',{key:item.key})}>
           
+          <Text>
+          {item.name}
+         </Text>
+         
+          </TouchableOpacity>
+          
+         )
+      }}
         
     />
      
@@ -216,4 +227,4 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
 })
-//https://www.freecodecamp.org/news/react-native-firebase-tutorial/
+//https://www.freecodecamp.org/news/react-native-firebase-tutorial/v
