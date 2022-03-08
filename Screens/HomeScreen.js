@@ -184,6 +184,8 @@ const HomeScreen=({navigation})=>  {
           {item.name}
          </Text>
          
+         
+         
           </TouchableOpacity>
           
          )
