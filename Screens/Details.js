@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View , FlatList} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View , FlatList,Image} from 'react-native'
 import { auth } from '../firebase'
 import {  signOut } from "firebase/auth";
 import { db } from '../firebase';
@@ -22,7 +22,8 @@ const Details=({route})=>{
   
       const name1=snapshot.child("name").val();
       const IELTS1=snapshot.child("IELTS").val();
-      array.push({name : name1},{IELTS : IELTS1});
+      const imageUrl=snapshot.child("imageUrl").val();
+      array.push({name : name1,IELTS: IELTS1,image1:imageUrl});
       
      
    /*  snapshot.forEach((childSnapshot) => {
@@ -82,33 +83,72 @@ const renderItemupdated = ({item})=>(
 
  
    
-    return (<View style={styles.container}>
-       <Text>Hello there the full data is here........ </Text>
+   /* return (<View style={styles.container}>
+     
+       
+         
        <FlatList
        data={value}     
        
        keyExtractor={(item) => item.key}
     //   renderItem={renderItemupdated}
-    renderItem={({ item }) => {
-      // return <Text>{item.name}</Text>;
+     renderItem={({ item }) => {
+       
 
         return(
          
-
-          <Text>
-          {item.name}
-          {item.IELTS}
-         </Text>
-         
-         
+           
+          <Image style={styles.image} source={{ uri: item.image1 }} />
           
-          
+        
+                  
          )
       }}
         
     />
       
        </View>);
+       */
+       return (
+        <View style={styles.container}>
+         
+          <FlatList
+         data={value}     
+         
+         keyExtractor={(item) => item.key}
+      //   renderItem={renderItemupdated}
+      renderItem={({ item }) => {
+        // return <Text>{item.name}</Text>;
+  
+          return(
+            <TouchableOpacity onPress={()=>navigation.navigate('Details',{key:item.key})}>
+                  <Image style={styles.image} source={{ uri: item.image1 }} />
+            <Text>
+            Name : {item.name}
+           </Text>
+           <Text>
+            IELTS Score : {item.IELTS}
+           </Text>
+           
+     
+           
+           
+            </TouchableOpacity>
+            
+           )
+        }}
+          
+      />
+       
+      <TouchableOpacity
+          onPress={handleSignOut}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Sign out</Text>
+        </TouchableOpacity>
+      
+      </View>
+      )
 
 }
 export default Details;
@@ -136,4 +176,8 @@ const styles = StyleSheet.create({
      marginVertical: 8,
      marginHorizontal: 16,
    },
+   image :{
+    height :200,
+    width : 300
+  }
  })
