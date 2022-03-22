@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View , FlatList,Image} from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View , FlatList,Image,TextInput} from 'react-native'
 import { auth } from '../firebase'
 import {  signOut } from "firebase/auth";
 import { db } from '../firebase';
@@ -9,6 +9,8 @@ import { useState, useEffect } from "react";
 const Details=({route})=>{
   
    const [value, setvalue] = useState([]);
+   const [invite,setinvite]=React.useState("");
+
    const  dbs = getDatabase();
    var array=[];
    var a;
@@ -23,7 +25,8 @@ const Details=({route})=>{
       const name1=snapshot.child("name").val();
       const IELTS1=snapshot.child("IELTS").val();
       const imageUrl=snapshot.child("imageUrl").val();
-      array.push({name : name1,IELTS: IELTS1,image1:imageUrl});
+      const description=snapshot.child("description").val();
+      array.push({name : description,IELTS: IELTS1,image1:imageUrl});
       
      
    /*  snapshot.forEach((childSnapshot) => {
@@ -63,16 +66,15 @@ const Details=({route})=>{
    });
  },[]); 
  console.log(value);
-  
- const handleSignOut = () => {
-   signOut(auth).then(() => {
-     // Sign-out successful.
-     navigation.navigate("Login");
-     console.log("Logout success");
-   }).catch((error) => {
-     // An error happened.
-     console.log(error);
-   });
+  //creating invitation tree.....
+const sendinvitation = () => {
+const user=auth.currentUser;
+const userId=user.uid;
+       set(ref(dbs, 'invitations/'+invite ), {
+         receiver: invite,
+         sender: userId
+        
+      });
 }
 
 const renderItemupdated = ({item})=>( 
@@ -124,13 +126,18 @@ const renderItemupdated = ({item})=>(
             <TouchableOpacity onPress={()=>navigation.navigate('Details',{key:item.key})}>
                   <Image style={styles.image} source={{ uri: item.image1 }} />
             <Text>
-            Name : {item.name}
+            Description : {item.name}
            </Text>
            <Text>
-            IELTS Score : {item.IELTS}
+            Remarks : "Good!"
            </Text>
            
-     
+           <TextInput
+         placeholder='Invite'
+         value={invite}
+         onChangeText={newtext=>setinvite(newtext)}
+               
+        />
            
            
             </TouchableOpacity>
@@ -141,10 +148,10 @@ const renderItemupdated = ({item})=>(
       />
        
       <TouchableOpacity
-          onPress={handleSignOut}
+          onPress={sendinvitation}
           style={styles.button}
         >
-          <Text style={styles.buttonText}>Sign out</Text>
+          <Text style={styles.buttonText}>Send Invitation</Text>
         </TouchableOpacity>
       
       </View>
