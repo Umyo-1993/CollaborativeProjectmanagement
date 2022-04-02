@@ -1,4 +1,3 @@
-
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View , FlatList,TextInput} from 'react-native'
 import { auth } from '../firebase'
@@ -17,6 +16,7 @@ const HomeScreen=({navigation})=>  {
   const [text, setText] = React.useState("");
   const [deadline, setdeadline] = React.useState("");
   const [description, setdescription] = React.useState("");
+  const [invite, setinvite] = React.useState("");
  
   const  dbs = getDatabase();
   var array=[];
@@ -88,8 +88,9 @@ const HomeScreen=({navigation})=>  {
   );
 }
   useEffect(()=>{
-
-    onValue(ref(dbs,'/users'), (snapshot) => {
+const user=auth.currentUser;
+const userId=user.uid;
+    onValue(ref(dbs,'/users'+"/"+ userId), (snapshot) => {
      
       
       snapshot.forEach((childSnapshot) => {
@@ -131,16 +132,16 @@ const HomeScreen=({navigation})=>  {
   console.log(value);
   useEffect(()=>{
 
-    onValue(ref(dbs,'/invitations'), (snapshot) => {
+    onValue(ref(dbs,'invitations/umotheing'), (snapshot) => {
      
       
       snapshot.forEach((childSnapshot) => {
 
-        const sender=childSnapshot.child("sender").val();
-        const receiver=childSnapshot.child("receiver").val();
+        const deadline=childSnapshot.child("projectdeadline").val();
+        const description=childSnapshot.child("description").val();
        
         const childkey=childSnapshot.key;
-        array.push({sender : sender ,receiver: receiver,key:childkey});
+        arrayinvite.push({description : description ,deadline : deadline,key:childkey});
       
       // const childData = childSnapshot.child("name").val();
        
@@ -169,7 +170,7 @@ const HomeScreen=({navigation})=>  {
     });
   },[]); 
   
-  console.log(value);
+  //console.log(valueinvite);
 
   const handleSignOut = () => {
     signOut(auth).then(() => {
@@ -210,7 +211,7 @@ const HomeScreen=({navigation})=>  {
     
 const user=auth.currentUser;
 const userId=user.uid;
-       set(ref(dbs, 'users/'+userId ), {
+       set(ref(dbs, 'users/'+userId+"/"+text ), {
         projectname: text,
         projectdeadline:deadline,
         description:description
@@ -218,6 +219,13 @@ const userId=user.uid;
       });
 
   }
+  const invitation=()=>{
+    //add with uid.......     
+      navigation.navigate("Invitation");
+
+  }
+//275
+
 
 /*    return (
       <View style={styles.container}>
@@ -262,8 +270,14 @@ const userId=user.uid;
         onChangeText={newtext=>setdescription(newtext)}
                
         />
+          <TextInput
+        placeholder='Invite'
+        value={invite}
+        onChangeText={newtext=>setinvite(newtext)}
+               
+        />
         
-        
+       
        
         <FlatList
        data={value}     
@@ -277,21 +291,15 @@ const userId=user.uid;
         return(
           <TouchableOpacity onPress={()=>navigation.navigate('Details',{key:item.key})}>
 
-          
-         
+                
          <Text>
           {item.projectname}
          </Text>
          <Text>
           {item.projectdeadline}
          </Text>
-         <Text>
-          "Invitations Lists"
-         </Text>
-         <Text>
-          {item.sender}
-         </Text>
-
+         
+        
 
           </TouchableOpacity>
            
@@ -314,9 +322,17 @@ const userId=user.uid;
 
         <Text style={styles.buttonText}>Save Data</Text>
       </TouchableOpacity>
-    
+      
+      <TouchableOpacity
+        onPress={invitation}
+        style={styles.button}
+      >
+
+        <Text style={styles.buttonText}>See Invitations</Text>
+      </TouchableOpacity>
          
     </View>
+    
     )
 }
 export default HomeScreen;
@@ -355,4 +371,3 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   }
 })
-//https://www.freecodecamp.org/news/react-native-firebase-tutorial/v
