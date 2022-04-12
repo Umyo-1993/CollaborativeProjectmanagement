@@ -6,6 +6,8 @@ import LoginScreen from './Screens/LoginScreen';
 import HomeScreen from './Screens/HomeScreen';
 import Details from './Screens/Details';
 import invitationscreen from './Screens/invitationscreen';
+import WelcomeScreen from './Screens/WelcomeScreen';
+
 
 
 
@@ -15,7 +17,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Login" component={LoginScreen} />      
+        <Stack.Screen name="Login" component={LoginScreen} />    
+        <Stack.Screen name="Welcome" component={WelcomeScreen} />         
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={Details} />
         <Stack.Screen name="Invitation" component={invitationscreen} />
