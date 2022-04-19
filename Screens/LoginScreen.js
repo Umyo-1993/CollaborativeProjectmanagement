@@ -17,7 +17,7 @@ const[password,setPassword]=useState('');
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       if (user) {
-        navigation.navigate("Home")
+        navigation.navigate("Invitation")
       }
     })
 

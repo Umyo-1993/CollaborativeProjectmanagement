@@ -7,184 +7,480 @@ import {   getDatabase,ref, onValue ,set} from "firebase/database";
 import { useState, useEffect } from "react";
 
 const Details=({route})=>{
+  const key=route.params.keyid;
+  const Pincode=route.params.pincode;
+  const Officename=route.params.officename;
   
-   const [value, setvalue] = useState([]);
-   const [invite,setinvite]=React.useState("");
-
-   const  dbs = getDatabase();
-   var array=[];
-   var a;
- const id=route.params.key;
- console.log(id);
-
- useEffect(()=>{
-
-   onValue(ref(dbs,'/users/'+ id), (snapshot) => {
-      
   
-      const name1=snapshot.child("name").val();
-      const IELTS1=snapshot.child("IELTS").val();
-      const imageUrl=snapshot.child("imageUrl").val();
-      const description=snapshot.child("description").val();
-      array.push({name : description,IELTS: IELTS1,image1:imageUrl});
-      
-     
-   /*  snapshot.forEach((childSnapshot) => {
-      
-
-
-       const IELTS=childSnapshot.child("IELTS").val();
-       const name=childSnapshot.child("name").val();
-       const childkey=childSnapshot.key;
-       array.push({name : name,IELTS: IELTS,key:childkey});
-     
-     // const childData = childSnapshot.child("name").val();
-      
-    
-
-
-   //   array.push({key:childKey});
-  //  array.push({name:childSnapshot.child("name").val()});
-   // array.push({IELTS:childSnapshot.child("IELTS").val()});
-  //    array.push({IELTS:childSnapshot.child("IELTS").val()});
-    
-     //  array.push({childData});
-       
-
-      
-
-     });
-    
- */
+  //const [todo, setTodo] = useState("");
+  const [value, setvalue] = useState([]);
+  const [valueinvite, setvalueinvite] = useState([]);
+  const [text, setText] = React.useState("");
+  const [person1, setperson1] = React.useState("");
+  const [status,setstatus] = React.useState("");
+  const [invite, setinvite] = React.useState("");
+ 
+  const  dbs = getDatabase();
+  var array=[];
+  var arrayinvite=[];
+  var a;
+  const pincode=route.params.Code;
+  const officename=route.params.Office;
   
-     const data = snapshot.val();
-     if (data !== null) {
-       
-       setvalue(array);
-     }
-    
-   });
- },[]); 
- console.log(value);
-  //creating invitation tree.....
-const sendinvitation = () => {
+  
+  const DATA = [
+    {
+      id:"1",
+      title:"Data Structures"
+    },
+    {
+      id:"2",
+      title:"STL"
+    },
+    {
+      id:"3",
+      title:"C++"
+    },
+    {
+      id:"4",
+      title:"Java"
+    },
+    {
+      id:"5",
+      title:"Python"
+    },
+    {
+      id:"6",
+      title:"CP"
+    },
+    {
+      id:"7",
+      title:"ReactJs"
+    },
+    {
+      id:"8",
+      title:"NodeJs"
+    },
+    {
+      id:"9",
+      title:"MongoDb"
+    },
+    {
+      id:"10",
+      title:"ExpressJs"
+    },
+    {
+      id:"11",
+      title:"PHP"
+    },
+    {
+      id:"12",
+      title:"MySql"
+    },
+  ];
+  const handleAddTask = () => {
+  
+    setTaskItems([...taskItems, task])
+    setTask(null);
+  }
+
+ const Item = ({title}) => {
+  return( 
+    <View style={styles.item}>
+      <Text>{title}</Text>
+    </View>
+  );
+}
+  useEffect(()=>{
 const user=auth.currentUser;
 const userId=user.uid;
-       set(ref(dbs, 'invitations/'+invite ), {
-         receiver: invite,
-         sender: userId
+    onValue(ref(dbs,'/users'+"/"+Pincode+"/"+Officename+"/"+key), (snapshot) => {
+     
+      
+     
+
+      
+        const projectname=snapshot.child("projectname").val();
+        const person1=snapshot.child("person1").val();
+        const childkey=snapshot.key;
+        array.push({person1 : person1,key:childkey,projectname:projectname,status:status});
+      
+      // const childData = childSnapshot.child("name").val();
+       
+     
+
+
+    //   array.push({key:childKey});
+   //  array.push({name:childSnapshot.child("name").val()});
+    // array.push({IELTS:childSnapshot.child("IELTS").val()});
+   //    array.push({IELTS:childSnapshot.child("IELTS").val()});
+     
+      //  array.push({childData});
+        
+
+       
+
+      
+     
+   
+      const data = snapshot.val();
+      if (data !== null) {
+        
+        setvalue(array);
+      }
+     
+    });
+  },[]); 
+  
+  console.log(value);
+  useEffect(()=>{
+
+    onValue(ref(dbs,'invitations/umotheing'), (snapshot) => {
+     
+      
+      snapshot.forEach((childSnapshot) => {
+
+        const person1=childSnapshot.child("person1").val();
+        const status=childSnapshot.child("status").val();
+       
+        const childkey=childSnapshot.key;
+        arrayinvite.push({person1 : person1 ,status : status,key:childkey});
+      
+      // const childData = childSnapshot.child("name").val();
+       
+     
+
+
+    //   array.push({key:childKey});
+   //  array.push({name:childSnapshot.child("name").val()});
+    // array.push({IELTS:childSnapshot.child("IELTS").val()});
+   //    array.push({IELTS:childSnapshot.child("IELTS").val()});
+     
+      //  array.push({childData});
+        
+
+       
+
+      });
+     
+   
+      const data = snapshot.val();
+      if (data !== null) {
+        
+        setvalueinvite(arrayinvite);
+      }
+     
+    });
+  },[]); 
+  
+  //console.log(valueinvite);
+
+  const handleSignOut = () => {
+    signOut(auth).then(() => {
+      // Sign-out successful.
+
+   //   set(ref(dbs, '/users' ), {
+    //    projectbane: {text}
+        
+  //    });
+ 
+      navigation.navigate("Login");
+      console.log("Logout success");
+    }).catch((error) => {
+      // An error happened.
+      console.log(error);
+    });
+    
+  /*  onValue(ref(dbs,'/users'), (snapshot) => {
+      snapshot.forEach((childSnapshot) => {
+       var array=[];
+       const childKey = childSnapshot.key;
+       const childData = childSnapshot.val();
+       
+     
+        array.push(childData);
+        console.log(array);
+      });
+   
+  /*    const data = snapshot.val();
+      if (data !== null) {
+        console.log(data);
+      }
+    }); */
+
+  }
+  const save=()=>{
+    //add with uid.......
+    
+const user=auth.currentUser;
+const userId=user.uid;
+       set(ref(dbs, 'users/'+pincode+"/"+officename +"/"+text ), {
+        projectname: text,
+        person1:person1,
+        status:status
         
       });
-}
 
-const renderItemupdated = ({item})=>( 
+  }
+  const invitation=()=>{
+    //add with uid.......     
+      navigation.navigate("Invitation");
 
-   <Text>Student's Name: {item.name}</Text>   
-   
- );
+  }
+//275
 
- 
-   
-   /* return (<View style={styles.container}>
+
+/*    return (
+      <View style={styles.container}>
+     <Text>Email: {auth.currentUser?.email}</Text>
+      <Text>Email: {a}</Text>
+    
+      <TouchableOpacity
+        onPress={handleSignOut}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Sign out</Text>
+      </TouchableOpacity>
      
-       
+    
+    </View>
+    )*/
+    const renderItemupdated = ({item})=>( 
+      <Text>Student's Name: {item.name}</Text>   
+      
+  
+    );
+   
+    return (
+      
+      
+      <View style={[styles.container, {
+        // Try setting `flexDirection` to `"row"`.
+        flexDirection: "column"
+      }]}>
+        <TextInput
+        placeholder='Project Name'
+        value={text}
+        onChangeText={newtext=>setText(newtext)}
+               
+        />
+           <TextInput
+        placeholder='Person1'
+        value={person1}
+        onChangeText={newtext=>setperson1(newtext)}
+               
+        />
+          <TextInput
+        placeholder='status'
+        value={status}
+        onChangeText={newtext=>setstatus(newtext)}
+               
+        />
+        <TextInput
+        placeholder='Invite'
+        value={invite}
+        onChangeText={newtext=>setinvite(newtext)}
+               
+        />
          
-       <FlatList
+       
+        <FlatList
        data={value}     
        
        keyExtractor={(item) => item.key}
     //   renderItem={renderItemupdated}
-     renderItem={({ item }) => {
-       
+       renderItem={({ item }) => {
+      // return <Text>{item.name}</Text>;
+      // next task is  creat eanother flatlist to see the joint project...........
 
         return(
-         
-           
-          <Image style={styles.image} source={{ uri: item.image1 }} />
           
+         
+          <TouchableOpacity 
+          
+          onPress={()=>alert("Still works to Do.......")}>
+         <View style={styles.rectangle}>
+     
+         <View style={[styles.container, {
+        // Try setting `flexDirection` to `"row"`.
+        flexDirection: "row",
+      },]}>
         
-                  
+      
+       <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          ToDo
+          
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >Name
+          
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          Status
+          
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+         End Date
+          
+         </Text>
+       </View>
+       
+
+       <View style={[styles.container, {
+        // Try setting `flexDirection` to `"row"`.
+        flexDirection: "row",
+      },]}>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          {item.projectname}
+          
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          {item.person1}
+         </Text>
+         
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          {item.status}
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          3/04/2022
+         </Text>
+         </View>
+      </View>
+      
+          </TouchableOpacity>
+         
+         
+          
          )
       }}
         
     />
-      
-       </View>);
-       */
-       return (
-        <View style={styles.container}>
-         
-          <FlatList
-         data={value}     
-         
-         keyExtractor={(item) => item.key}
-      //   renderItem={renderItemupdated}
-      renderItem={({ item }) => {
-        // return <Text>{item.name}</Text>;
   
-          return(
-            <TouchableOpacity onPress={()=>navigation.navigate('Details',{key:item.key})}>
-                  <Image style={styles.image} source={{ uri: item.image1 }} />
-            <Text>
-            Description : {item.name}
-           </Text>
-           <Text>
-            Remarks : "Good!"
-           </Text>
-           
-           <TextInput
-         placeholder='Invite'
-         value={invite}
-         onChangeText={newtext=>setinvite(newtext)}
-               
-        />
-           
-           
-            </TouchableOpacity>
-            
-           )
-        }}
-          
-      />
-       
-      <TouchableOpacity
-          onPress={sendinvitation}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Send Invitation</Text>
-        </TouchableOpacity>
-      
-      </View>
-      )
+     <TouchableOpacity
+        onPress={handleSignOut}
+        style={styles.button}
+      >
+        <Text style={styles.buttonText}>Sign out</Text>
+      </TouchableOpacity>
 
+      <TouchableOpacity
+        onPress={save}
+        style={styles.button}
+      >
+
+        <Text style={styles.buttonText}>Update</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        onPress={invitation}
+        style={styles.button}
+      >
+
+        <Text style={styles.buttonText}>See Invitations</Text>
+      </TouchableOpacity>
+   
+         
+    </View>
+    
+    )
+  
+ 
 }
 export default Details;
 const styles = StyleSheet.create({
-   container: {
-     marginTop:30,
-     padding:2,
-   },
-    button: {
-     backgroundColor: '#0782F9',
-     width: '60%',
-     padding: 15,
-     borderRadius: 10,
-     alignItems: 'center',
-     marginTop: 40,
-   },
-   buttonText: {
-     color: 'white',
-     fontWeight: '700',
-     fontSize: 16,
-   },
-   item: {
-     backgroundColor: '#f5f520',
-     padding: 20,
-     marginVertical: 8,
-     marginHorizontal: 16,
-   },
-   image :{
-    height :200,
-    width : 300
-  }
- })
+  container: {
+    marginTop:30,
+    padding:2,
+  },
+   button: {
+    backgroundColor: '#0782F9',
+    width: '60%',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 40,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  item: {
+    backgroundColor: '#f5f520',
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  addWrapper: {
+    width: 60,
+    height: 60,
+    backgroundColor: '#FFF',
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderColor: '#C0C0C0',
+    borderWidth: 1,
+  },
+  RectangleShapeView: {
+    borderRadius: 5,
+    // Set border width.
+    borderWidth: 2,
+    // Set border Hex Color Code Here.
+    borderColor: '#FF5722', 
+    // Setting up Text Font Color.
+    color: '#000',
+    // Setting Up Background Color of Text component.
+    backgroundColor : '#CDDC39', 
+    // Adding padding on Text component.
+    padding : 2,
+    fontSize: 14,
+    textAlign: 'center',
+    margin: 5
+   
+    },
+    rectangle : {
+      width: '100%',
+      height: 200,
+      marginTop: 10,
+      borderRadius: 5,
+    // Set border width.
+    borderWidth: 2,
+    
+
+      // Set border Hex Color Code Here.
+    
+      // Setting up Text Font Color.
+    
+      // Setting Up Background Color of Text component.
+      
+      // Adding padding on Text component.
+      padding : 2,
+      fontSize: 14
+      
+    }
+  
+})
+//invitation and create both own and invited and show ..own is only todo list 

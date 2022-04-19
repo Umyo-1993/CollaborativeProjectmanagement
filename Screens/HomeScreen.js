@@ -8,20 +8,22 @@ import {   getDatabase,ref, onValue ,set} from "firebase/database";
 import { useState, useEffect } from "react";
 
 
-const HomeScreen=({navigation})=>  {
+const HomeScreen=({route,navigation})=>  {
  
   //const [todo, setTodo] = useState("");
   const [value, setvalue] = useState([]);
   const [valueinvite, setvalueinvite] = useState([]);
   const [text, setText] = React.useState("");
-  const [deadline, setdeadline] = React.useState("");
-  const [description, setdescription] = React.useState("");
+  const [person1, setperson1] = React.useState("");
+  const [status,setstatus] = React.useState("");
   const [invite, setinvite] = React.useState("");
  
   const  dbs = getDatabase();
   var array=[];
   var arrayinvite=[];
   var a;
+  const pincode=route.params.Code;
+  const officename=route.params.Office;
   
   
   const DATA = [
@@ -90,17 +92,17 @@ const HomeScreen=({navigation})=>  {
   useEffect(()=>{
 const user=auth.currentUser;
 const userId=user.uid;
-    onValue(ref(dbs,'/users'+"/"+ userId), (snapshot) => {
+    onValue(ref(dbs,'/users'+"/"+pincode+"/"+officename), (snapshot) => {
      
       
       snapshot.forEach((childSnapshot) => {
 
         const IELTS=childSnapshot.child("IELTS").val();
-        const name=childSnapshot.child("name").val();
+        const status=childSnapshot.child("status").val();
         const projectname=childSnapshot.child("projectname").val();
-        const pdead=childSnapshot.child("projectdeadline").val();
+        const person1=childSnapshot.child("person1").val();
         const childkey=childSnapshot.key;
-        array.push({name : name,IELTS: IELTS,key:childkey,projectname:projectname,projectdeadline:pdead});
+        array.push({person1 : person1,key:childkey,projectname:projectname,status:status});
       
       // const childData = childSnapshot.child("name").val();
        
@@ -137,11 +139,11 @@ const userId=user.uid;
       
       snapshot.forEach((childSnapshot) => {
 
-        const deadline=childSnapshot.child("projectdeadline").val();
-        const description=childSnapshot.child("description").val();
+        const person1=childSnapshot.child("person1").val();
+        const status=childSnapshot.child("status").val();
        
         const childkey=childSnapshot.key;
-        arrayinvite.push({description : description ,deadline : deadline,key:childkey});
+        arrayinvite.push({person1 : person1 ,status : status,key:childkey});
       
       // const childData = childSnapshot.child("name").val();
        
@@ -211,10 +213,10 @@ const userId=user.uid;
     
 const user=auth.currentUser;
 const userId=user.uid;
-       set(ref(dbs, 'users/'+userId+"/"+text ), {
+       set(ref(dbs, 'users/'+pincode+"/"+officename +"/"+text ), {
         projectname: text,
-        projectdeadline:deadline,
-        description:description
+        person1:person1,
+        status:status
         
       });
 
@@ -251,7 +253,10 @@ const userId=user.uid;
     return (
       
       
-      <View style={styles.container}>
+      <View style={[styles.container, {
+        // Try setting `flexDirection` to `"row"`.
+        flexDirection: "column"
+      }]}>
         <TextInput
         placeholder='Project Name'
         value={text}
@@ -259,25 +264,24 @@ const userId=user.uid;
                
         />
            <TextInput
-        placeholder='Project Deadline'
-        value={deadline}
-        onChangeText={newtext=>setdeadline(newtext)}
+        placeholder='Person1'
+        value={person1}
+        onChangeText={newtext=>setperson1(newtext)}
                
         />
           <TextInput
-        placeholder='Project Description(max 20 words)'
-        value={description}
-        onChangeText={newtext=>setdescription(newtext)}
+        placeholder='status'
+        value={status}
+        onChangeText={newtext=>setstatus(newtext)}
                
         />
-          <TextInput
+        <TextInput
         placeholder='Invite'
         value={invite}
         onChangeText={newtext=>setinvite(newtext)}
                
         />
-        
-       
+         
        
         <FlatList
        data={value}     
@@ -286,35 +290,101 @@ const userId=user.uid;
     //   renderItem={renderItemupdated}
        renderItem={({ item }) => {
       // return <Text>{item.name}</Text>;
-      // next task is  creat eanother flatlist to see the joint project.......
+      // next task is  creat eanother flatlist to see the joint project...........
 
         return(
-          <TouchableOpacity onPress={()=>navigation.navigate('Details',{key:item.key})}>
-
-                
-         <Text>
-          {item.projectname}
+          
+         
+          <TouchableOpacity 
+          
+          onPress={()=>navigation.navigate('Details',{keyid:item.key,pincode:pincode,officename:officename})}>
+         <View style={styles.rectangle}>
+     
+         <View style={[styles.container, {
+        // Try setting `flexDirection` to `"row"`.
+        flexDirection: "row",
+      },]}>
+        
+      
+       <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          ToDo
+          
          </Text>
-         <Text>
-          {item.projectdeadline}
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >Name
+          
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          Status
+          
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+         End Date
+          
+         </Text>
+       </View>
+       
+
+       <View style={[styles.container, {
+        // Try setting `flexDirection` to `"row"`.
+        flexDirection: "row",
+      },]}>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          {item.projectname}
+          
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          {item.person1}
          </Text>
          
-        
-
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          {item.status}
+         </Text>
+         <Text style={[styles.RectangleShapeView, 
+        // Try setting `flexDirection` to `"row"`.
+        {flex :2}
+    ]} >
+          3/04/2022
+         </Text>
+         </View>
+      </View>
+      
           </TouchableOpacity>
-           
+         
+         
           
          )
       }}
         
     />
-     
-    <TouchableOpacity
+  
+     <TouchableOpacity
         onPress={handleSignOut}
         style={styles.button}
       >
         <Text style={styles.buttonText}>Sign out</Text>
       </TouchableOpacity>
+
       <TouchableOpacity
         onPress={save}
         style={styles.button}
@@ -330,6 +400,7 @@ const userId=user.uid;
 
         <Text style={styles.buttonText}>See Invitations</Text>
       </TouchableOpacity>
+   
          
     </View>
     
@@ -369,5 +440,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#C0C0C0',
     borderWidth: 1,
-  }
+  },
+  RectangleShapeView: {
+    borderRadius: 5,
+    // Set border width.
+    borderWidth: 2,
+    // Set border Hex Color Code Here.
+    borderColor: '#FF5722', 
+    // Setting up Text Font Color.
+    color: '#000',
+    // Setting Up Background Color of Text component.
+    backgroundColor : '#CDDC39', 
+    // Adding padding on Text component.
+    padding : 2,
+    fontSize: 14,
+    textAlign: 'center',
+    margin: 5
+   
+    },
+    rectangle : {
+      width: '100%',
+      height: 200,
+      marginTop: 10,
+      borderRadius: 5,
+    // Set border width.
+    borderWidth: 2,
+    
+
+      // Set border Hex Color Code Here.
+    
+      // Setting up Text Font Color.
+    
+      // Setting Up Background Color of Text component.
+      
+      // Adding padding on Text component.
+      padding : 2,
+      fontSize: 14
+      
+    }
+  
 })
+//invitation and create both own and invited and show ..own is only todo list 
